@@ -1,0 +1,197 @@
+# Task 3
+##Print numbers from 1 to 50
+for i in range(1, 51):
+    print(i)
+##2. Print even numbers from 1 to 100
+for i in range(2, 101, 2):
+    print(i)
+##3. Print odd numbers from 1 to 100
+for i in range(1, 101, 2):
+    print(i)
+##4. Multiplication table of 7
+for i in range(1, 11):
+    print("7 x", i, "=", 7 * i)
+##5. Sum of numbers from 1 to 100
+total = 0
+for i in range(1, 101):
+    total += i
+print("Sum:", total)
+##6. Reverse from 50 to 1
+for i in range(50, 0, -1):
+    print(i)
+##7. Count numbers divisible by 3 (1–100)
+count = 0
+for i in range(1, 101):
+    if i % 3 == 0:
+        count += 1
+print("Count:", count)
+##8. Squares from 1 to 10
+for i in range(1, 11):
+    print(i ** 2)
+##9. Cubes of first 10 numbers
+for i in range(1, 11):
+    print(i ** 3)
+##10. Print 1 to n
+n = int(input("Enter n: "))
+for i in range(1, n + 1):
+    print(i)        
+##Section 2: While Loop (11–15)
+##11. Print 1 to 20
+i = 1
+while i <= 20:
+    print(i)
+    i += 1
+##12. Factorial
+n = int(input("Enter number: "))
+fact = 1
+i = 1
+while i <= n:
+    fact *= i
+    i += 1
+print("Factorial:", fact)
+##13. Reverse a number
+num = int(input("Enter number: "))
+rev = 0
+
+while num > 0:
+    digit = num % 10
+    rev = rev * 10 + digit
+    num //= 10
+
+print("Reversed:", rev)
+##14. Count digits
+num = int(input("Enter number: "))
+count = 0
+
+while num > 0:
+    count += 1
+    num //= 10
+
+print("Digits:", count)
+##15. Stop when user types "stop"
+while True:
+    text = input("Enter something: ")
+    if text == "stop":
+        break
+##Section 3: Nested Loop (16–20)
+##16. Pattern *
+for i in range(1, 5):
+    print("*" * i) 
+##17. Pattern numbers
+for i in range(1, 5):
+    for j in range(1, i + 1):
+        print(j, end="")
+    print()           
+##18. Multiplication table (1–5)
+for i in range(1, 6):
+    for j in range(1, 11):
+        print(i, "x", j, "=", i * j)
+    print()
+##19. A B C pattern
+for i in range(3):
+    for j in ["A", "B", "C"]:
+        print(j, end=" ")
+    print()
+##20. 1–9 grid
+num = 1
+for i in range(3):
+    for j in range(3):
+        print(num, end=" ")
+        num += 1
+    print()            
+##Section 4: String Basics (21–25)
+##21. Count characters
+s = input("Enter string: ")
+print("Length:", len(s))    
+##22. Count vowels
+s = input("Enter string: ")
+count = 0
+
+for ch in s.lower():
+    if ch in "aeiou":
+        count += 1
+
+print("Vowels:", count)
+##23. Count consonants
+s = input("Enter string: ")
+count = 0
+
+for ch in s.lower():
+    if ch.isalpha() and ch not in "aeiou":
+        count += 1
+
+print("Consonants:", count)
+##24. Reverse string
+s = input("Enter string: ")
+rev = ""
+
+for ch in s:
+    rev = ch + rev
+
+print("Reversed:", rev)
+##25. Palindrome check
+s = input("Enter string: ")
+
+if s == s[::-1]:
+    print("Palindrome")
+else:
+    print("Not Palindrome")
+##Section 5: String Slicing (26–30)
+##26. First 5 characters
+s = input("Enter string: ")
+print(s[:5])    
+##27. Last 3 characters
+print(s[-3:])
+##Reverse using slicing
+print(s[::-1])
+##29. Every 2nd character
+print(s[::2])
+##30. Remove first & last character
+print(s[1:-1])
+##Section 6: List Basics (31–35)
+##31. Sum of list
+nums = [1, 2, 3, 4, 5]
+print("Sum:", sum(nums))
+##32. Maximum value
+print("Max:", max(nums))
+##33. Minimum value
+print("Min:", min(nums))
+##34. Count elements
+print("Count:", len(nums))
+##35. Check element exists
+x = int(input("Enter number: "))
+if x in nums:
+    print("Exists")
+else:
+    print("Not exists")
+##Section 7: List Operations (36–40)
+##36. Append elements
+nums = []
+nums.append(10)
+nums.append(20)
+nums.append(30)
+print(nums)
+##37. Insert element
+nums.insert(1, 15)
+print(nums)
+##38. Remove element
+nums.remove(20)
+print(nums)
+##39. Reverse list (without .reverse())
+nums = [1, 2, 3, 4]
+rev = []
+
+for i in nums:
+    rev = [i] + rev
+
+print(rev)
+##40. Sort list (without .sort())
+nums = [5, 2, 8, 1]
+
+for i in range(len(nums)):
+    for j in range(i + 1, len(nums)):
+        if nums[i] > nums[j]:
+            nums[i], nums[j] = nums[j], nums[i]
+
+print(nums)
+
