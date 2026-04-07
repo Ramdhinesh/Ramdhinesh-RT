@@ -1,0 +1,179 @@
+import mysql.connector
+from abc import ABC, abstractmethod
+from functools import reduce
+
+db = mysql.connector.connect(
+    host="127.0.0.1",
+    user="root",
+    password="Ram2002@",
+    database="python_db"
+)
+
+cursor = db.cursor()
+
+# Abstract Class
+class AbstractUser(ABC):
+    @abstractmethod
+    def get_details(self):
+        pass
+
+# User Class (Encapsulation)
+class User(AbstractUser):
+    def __init__(self, name):
+        self.__name = name
+
+    def get_name(self):
+        return self.__name
+
+    def get_details(self):
+        return f"User: {self.__name}"
+
+    def add_user(self):
+        cursor.execute("INSERT INTO users (name) VALUES (%s)", (self.__name,))
+        db.commit()
+
+# Expense Class (Inheritance + super + override)
+class Expense(User):
+    def __init__(self, name, user_id, amount, category, desc, date):
+        super().__init__(name)
+        self.user_id = user_id
+        self.amount = amount
+        self.category = category
+        self.desc = desc
+        self.date = date
+
+    def get_details(self):
+        return f"{self.category} | {self.amount} | {self.date}"
+
+    def add_expense(self):
+        cursor.execute("""
+        INSERT INTO expenses (user_id, amount, category, description, date)
+        VALUES (%s, %s, %s, %s, %s)
+        """, (self.user_id, self.amount, self.category, self.desc, self.date))
+        db.commit()
+
+# View Expenses
+def view_expenses(user_id):
+    cursor.execute("""
+    SELECT u.name, e.exp_id, e.amount, e.category, e.description, e.date
+    FROM users u
+    JOIN expenses e ON u.user_id = e.user_id
+    WHERE u.user_id = %s
+    """, (user_id,))
+    return cursor.fetchall()
+
+# Filter
+def filter_expenses(data):
+    cat = input("Category: ")
+    print(list(filter(lambda x: x[3] == cat, data)))
+
+    date = input("Date (YYYY-MM-DD): ")
+    print([x for x in data if str(x[5]) == date])
+
+# Total
+def total_expense(data):
+    total = reduce(lambda acc, x: acc + x,
+                   map(lambda d: d[2], data), 0)
+    print("Total:", total)
+
+# Category-wise
+def category_spending(data):
+    categories = {d[3] for d in data}
+    category_total = {
+        cat: sum(d[2] for d in data if d[3] == cat)
+        for cat in categories
+    }
+    print(category_total)
+    return category_total
+
+# Update
+def update_expense():
+    exp_id = int(input("Expense ID: "))
+    amount = float(input("New Amount: "))
+    cursor.execute("UPDATE expenses SET amount=%s WHERE exp_id=%s",
+                   (amount, exp_id))
+    db.commit()
+
+# Delete
+def delete_expense():
+    exp_id = int(input("Expense ID: "))
+    cursor.execute("DELETE FROM expenses WHERE exp_id=%s", (exp_id,))
+    db.commit()
+
+# Monthly Report
+def monthly_report(data):
+    monthly = {}
+    for d in data:
+        month = str(d[5])[:7]
+        monthly[month] = monthly.get(month, 0) + d[2]
+    print(monthly)
+
+# Highest Expense
+def highest_expense(data):
+    if data:
+        high = reduce(lambda a, b: a if a[2] > b[2] else b, data)
+        print(high)
+    else:
+        print("No data")
+
+# Smart Insight
+def smart_insight(category_total):
+    if category_total:
+        max_cat = max(category_total, key=category_total.get)
+        print(f"You are spending too much on {max_cat}")
+
+# Main Menu
+data = []
+category_total = {}
+
+while True:
+    print("\n1.Add User 2.Add Expense 3.View 4.Filter 5.Total")
+    print("6.Category 7.Update 8.Delete 9.Report 10.Highest 11.Insight 12.Exit")
+
+    choice = input("Choice: ")
+
+    if choice == "1":
+        name = input("Name: ")
+        User(name).add_user()
+
+    elif choice == "2":
+        uid = int(input("User ID: "))
+        amt = float(input("Amount: "))
+        cat = input("Category: ")
+        desc = input("Description: ")
+        date = input("Date (YYYY-MM-DD): ")
+        Expense("temp", uid, amt, cat, desc, date).add_expense()
+
+    elif choice == "3":
+        uid = int(input("User ID: "))
+        data = view_expenses(uid)
+        print(data)
+
+    elif choice == "4":
+        filter_expenses(data)
+
+    elif choice == "5":
+        total_expense(data)
+
+    elif choice == "6":
+        category_total = category_spending(data)
+
+    elif choice == "7":
+        update_expense()
+
+    elif choice == "8":
+        delete_expense()
+
+    elif choice == "9":
+        monthly_report(data)
+
+    elif choice == "10":
+        highest_expense(data)
+
+    elif choice == "11":
+        smart_insight(category_total)
+
+    elif choice == "12":
+        break
+
+
